@@ -1,54 +1,61 @@
 // Canvas.swift
 // Created by Will Field-Thompson on 09/03/16
 
+/// Conforming types can be drawn upon.
+/// - note:
+/// Default implementations mean that only `put(color:at:)` is
+/// necessary to conform to `Canvas`, but more advanced algorithms
+/// are possible if you provide your own.
 public protocol Canvas {
+    /// Color is the type used to represent colors on this Canvas.
+    /// `RGB` and `RGBA` are convenient types to use here, but there's
+    /// no reason to restrict it.
     associatedtype Color
+
+    /// Draw a pixel of `color` at the point.
     func put(color: Color, at: Point)
 
-    func strokeLine(from: Point, to: Point, color: Color)
-    func strokePolygon(points: [Point], color: Color, complete: Bool)
-    
-    /* // Should get around to these things eventually
+    /// Draw a single line of `color` from one point to the next.
+    func stroke(_ line: Line, color: Color)
+
+    /// Draw lines connecting these points of `color`.
+    func stroke(_ polygon: Polygon, color: Color)
+
+    // TODO: Ellipses and filling
+    /*
     func strokeEllipse(center: Point, radius: Float)
     func fillEllipse(center: Point, radius: Float)
-   
     func fillPolygon(points: [Point])
     */
 }
 
-// Default implementations mean that only `put(color:at:)` is
-// necessary to conform to `Canvas`, but more advanced algorithms
-// are possible if you provide your own.
 public extension Canvas {
-    public func strokeLine(from: Point, to: Point, color: Color) {
-        bresenham(from: from, to: to, color: color)
+    public func stroke(_ line: Line, color: Color) {
+        bresenham(from: line.from, to: line.to, color: color)
     }
-    public func strokePolygon(points: [Point], color: Color) {
-        strokePolygon(points: points, color: color, complete: true)
-    }
-    public func strokePolygon(points: [Point], color: Color, complete: Bool) {
+    
+    public func stroke(_ poly: Polygon, color: Color) {
+        let points = poly.verticies
+        
         guard points.count > 1 else {
             print("Can't stroke polygon of \(points.count) points.")
             return
         }
         
         for i in 0 ..< points.count - 1 {
-            strokeLine(from: points[i],
-                       to: points[i+1],
-                       color: color)
+            let line = Line(from: points[i], to: points[i+1])
+            stroke(line, color: color)
         }
-        
-        if complete {
-            strokeLine(from: points.last!,
-                       to: points.first!,
-                       color: color)
-        }
-
     }
 }
 
-// Borrowed from my high school graphics project -- Will
+// - MARK: Bresenham / Default Canvas implementations
 
+// The following is borrowed almost straight from my high school graphics
+// project. It should be readable enough, but I haven't had the time to
+// properly comment it yet. -- Will
+
+/// Order points by `x`.
 private func order(_ p1: inout Point, _ p2: inout Point) {
     if p2.x < p1.x {
         let swap = p1
@@ -57,6 +64,7 @@ private func order(_ p1: inout Point, _ p2: inout Point) {
     }
 }
 
+/// Perform a single bresenham step.
 private func bstep(accumulator: inout Int,
                    majorCounter: inout UInt32,
                    minorCounter: inout UInt32,
@@ -75,6 +83,7 @@ private func bstep(accumulator: inout Int,
 }
 
 fileprivate extension Canvas {
+    /// Stroke a line using the bresenham algorithm.
     fileprivate func bresenham(from p1: Point, to p2: Point, color: Color) {
         var (greatP, littleP) = (p2, p1)
         order(&littleP, &greatP)

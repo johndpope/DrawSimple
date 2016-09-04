@@ -1,27 +1,16 @@
 // Shape.swift
 // Created by Will Field-Thompson on 09/03/16
 
+/// A single point on a `Canvas`.
 public typealias Point = (x: UInt32, y: UInt32)
 
+/// A line on a `Canvas`.
 public struct Line {
     let from: Point
     let to: Point
 }
 
+/// An open polygon, drawable as a series of lines
 public protocol Polygon {
-    var points: [Point] { get }
-}
-
-public extension Polygon {
-    var lines: AnySequence<Line> {
-        let points = self.points
-        var i = 0
-        return AnySequence {
-            return AnyIterator {
-                guard i < points.count - 1 else { return nil }
-                defer { i += 1 }
-                return Line(from: points[i], to: points[i+1])
-            }
-        }
-    }
+    var verticies: [Point] { get }
 }

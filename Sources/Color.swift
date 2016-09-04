@@ -1,10 +1,17 @@
+// Color.swift
+// Created by Will Field-Thompson on 09/03/16
+
+/// Represents a color in RGBA format.
 public struct RGBA {
     let red: UInt8
     let green: UInt8
     let blue: UInt8
     let alpha: Float
 
+    /// RGBA(0, 0, 0, 1)
     static var black: RGBA { return RGBA(solid: .black) }
+
+    /// RGBA(255, 255, 255, 1)
     static var white: RGBA { return RGBA(solid: .white) }
     
     init(red: UInt8, green: UInt8, blue: UInt8, alpha: UInt8) {
@@ -16,6 +23,7 @@ public struct RGBA {
         assert(0 <= self.alpha && self.alpha < 256)
     }
 
+    /// Copy the color and set the alpha channel to 1.
     init(solid rgb: RGB) {
         self.init(red: rgb.red,
                   green: rgb.green,
@@ -24,6 +32,7 @@ public struct RGBA {
     }
 }
 
+/// Represents a color in RGB format.
 public struct RGB {
     let red: UInt8
     let green: UInt8
@@ -33,6 +42,7 @@ public struct RGB {
     static var white: RGB { return RGB(red: 255, green: 255, blue: 255) }
 }
 
+/// Blend an RGBA color into an RGB color, producing an RGB color.
 func +(lhs: RGB, rhs: RGBA) -> RGB {
     let lha = 1 - rhs.alpha
     let r = (Float(lhs.red) * lha) + (Float(rhs.red) * rhs.alpha)
@@ -41,6 +51,7 @@ func +(lhs: RGB, rhs: RGBA) -> RGB {
     return RGB(red: UInt8(r), green: UInt8(g), blue: UInt8(b))
 }
 
+/// Blend an RGBA color into an RGB color, producing an RGB color.
 func +=(lhs: inout RGB, rhs: RGBA) {
     lhs = lhs + rhs
 }
