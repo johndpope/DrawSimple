@@ -3,18 +3,18 @@
 
 /// Represents a color in RGBA format.
 public struct RGBA {
-    let red: UInt8
-    let green: UInt8
-    let blue: UInt8
-    let alpha: Float
+    public let red: UInt8
+    public let green: UInt8
+    public let blue: UInt8
+    public let alpha: Float
 
     /// RGBA(0, 0, 0, 1)
-    static var black: RGBA { return RGBA(solid: .black) }
+    public static var black: RGBA { return RGBA(solid: .black) }
 
     /// RGBA(255, 255, 255, 1)
-    static var white: RGBA { return RGBA(solid: .white) }
+    public static var white: RGBA { return RGBA(solid: .white) }
     
-    init(red: UInt8, green: UInt8, blue: UInt8, alpha: UInt8) {
+    public init(red: UInt8, green: UInt8, blue: UInt8, alpha: UInt8) {
         self.red = red
         self.green = green
         self.blue = blue
@@ -24,7 +24,7 @@ public struct RGBA {
     }
 
     /// Copy the color and set the alpha channel to 1.
-    init(solid rgb: RGB) {
+    public init(solid rgb: RGB) {
         self.init(red: rgb.red,
                   green: rgb.green,
                   blue: rgb.blue,
@@ -34,16 +34,16 @@ public struct RGBA {
 
 /// Represents a color in RGB format.
 public struct RGB {
-    let red: UInt8
-    let green: UInt8
-    let blue: UInt8
-
-    static var black: RGB { return RGB(red: 0, green: 0, blue: 0) }
-    static var white: RGB { return RGB(red: 255, green: 255, blue: 255) }
+    public let red: UInt8
+    public let green: UInt8
+    public let blue: UInt8
+    
+    public static var black: RGB { return RGB(red: 0, green: 0, blue: 0) }
+    public static var white: RGB { return RGB(red: 255, green: 255, blue: 255) }
 }
 
 /// Blend an RGBA color into an RGB color, producing an RGB color.
-func +(lhs: RGB, rhs: RGBA) -> RGB {
+public func +(lhs: RGB, rhs: RGBA) -> RGB {
     let lha = 1 - rhs.alpha
     let r = (Float(lhs.red) * lha) + (Float(rhs.red) * rhs.alpha)
     let g = (Float(lhs.green) * lha) + (Float(rhs.green) * rhs.alpha)
@@ -52,6 +52,6 @@ func +(lhs: RGB, rhs: RGBA) -> RGB {
 }
 
 /// Blend an RGBA color into an RGB color, producing an RGB color.
-func +=(lhs: inout RGB, rhs: RGBA) {
+public func +=(lhs: inout RGB, rhs: RGBA) {
     lhs = lhs + rhs
 }

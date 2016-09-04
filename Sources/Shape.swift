@@ -6,8 +6,12 @@ public typealias Point = (x: UInt32, y: UInt32)
 
 /// A line on a `Canvas`.
 public struct Line {
-    let from: Point
-    let to: Point
+    public let from: Point
+    public let to: Point
+    public init(from: Point, to: Point) {
+        self.from = from
+        self.to = to
+    }
 }
 
 /// An open polygon, drawable as a series of lines
